@@ -6,10 +6,18 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   build:
     name: Build and analyse default scheme using xcodebuild command
     runs-on: macos-latest
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
